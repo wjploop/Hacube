@@ -318,11 +318,14 @@ class _AutoPlayCubeWidgetState extends State<AutoPlayCubeWidget>
       setState(() {
         radian += 0.02;
         final axis = Vector3(
-          math.sin(radian) + 1,
-          math.sin(radian + math.pi / 2) + 1,
-          math.sin(radian + math.pi) + 1,
+          1,1,0
         );
-        widget.cube.cameraMoved(axis, 0.02);
+        // final axis = Vector3(
+        //   math.sin(radian) + 1,
+        //   math.sin(radian + math.pi / 2) + 1,
+        //   math.sin(radian + math.pi) + 1,
+        // );
+        widget.cube.cameraMoved(axis, 0.002);
       });
     });
     autoPlayTicker.start();

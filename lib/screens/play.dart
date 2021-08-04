@@ -11,6 +11,12 @@ import 'package:hacube/cube.dart';
 import 'package:hacube/event.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
+void main(){
+  MaterialApp(
+    home: PlayScreen(),
+  );
+}
+
 class PlayScreen extends StatefulWidget {
   @override
   PlayScreenState createState() {
