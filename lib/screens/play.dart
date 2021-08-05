@@ -11,12 +11,6 @@ import 'package:hacube/cube.dart';
 import 'package:hacube/event.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
-void main(){
-  MaterialApp(
-    home: PlayScreen(),
-  );
-}
-
 class PlayScreen extends StatefulWidget {
   @override
   PlayScreenState createState() {
@@ -72,7 +66,8 @@ class PlayScreenState extends State<PlayScreen>
 
   void _afterLayout(_) async {
     Size screenSize = MediaQuery.of(context).size;
-    double cubeSize = min(screenSize.width, screenSize.height) / 7;
+    double cubeSize = min(screenSize.width, screenSize.height) / 6;
+    print('cube size $cubeSize');
     cube = Cube(pieceSize: cubeSize);
 
     setState(() {});

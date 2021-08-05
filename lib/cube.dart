@@ -11,10 +11,8 @@ class Cube {
   final double pieceSize;
   final double rotateRatio;
 
-  Cube({this.pieceSize = 80.0})
-  :rotateRatio = 0
-      // : rotateRatio = 2 * math.pi / (pieceSize * 3 * 4)
-  {
+  Cube({this.pieceSize = 40.0})
+      : rotateRatio = 2 * math.pi / (pieceSize * 3 * 4) {
     for (var i = 0; i < 27; i++) {
       final piece = CubePiece(this, i);
       pieces.add(piece);
@@ -47,10 +45,10 @@ class Cube {
     cameraTransform.setIdentity();
     cameraTransform
       ..setIdentity()
-      ..setEntry(3, 2, -0.0015);
+      ..setEntry(3, 2, -0.0015)
       // from https://medium.com/flutter-io/perspective-on-flutter-6f832f4d912e
-      // ..rotate(Vector3(0.0, 1.0, 0.0), -math.pi / 4) // rotate left 45c
-      // ..rotate(Vector3(1.0, 0.0, -1.0), -math.pi / 8); // show the orange face
+      ..rotate(Vector3(0.0, 1.0, 0.0), -math.pi / 4) // rotate left 45c
+      ..rotate(Vector3(1.0, 0.0, -1.0), -math.pi / 8); // show the orange face
     pieces.forEach((p) {
       p.reset();
       positionMap[p.position] = p;
@@ -277,6 +275,7 @@ class CubePiece {
 
   static final originRotation = Matrix3.identity();
   final Cube cube;
+  // 从上到下，
   final int initPosition; // 0-26 white front / orange up
   final List<PieceSurface> surfaces = [];
   final Vector3 initOrigin;
@@ -347,6 +346,7 @@ class PieceSurface {
 
     canvasTransform.translate(initOrigin);
 
+    // 根据面的不同，作不同的翻转
     switch (face) {
       case Face.BACK:
         canvasTransform.rotateY(math.pi);
