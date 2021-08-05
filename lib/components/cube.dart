@@ -12,6 +12,8 @@ import 'package:hacube/cube.dart';
 import 'package:hacube/event.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
+import 'cube_piece_widget.dart';
+
 const _90Degree = math.pi / 2;
 
 class PlayCubeWidget extends StatefulWidget {
@@ -37,7 +39,6 @@ class _PlayCubeWidgetState extends State<PlayCubeWidget>
   Widget build(BuildContext context) {
     return GestureDetector(
       onPanStart: (DragStartDetails details) {
-        print('on start');
         if (!widget.touchable) {
           return;
         }
@@ -280,13 +281,22 @@ class AutoPlayCubeWidget extends StatefulWidget {
   _AutoPlayCubeWidgetState createState() => _AutoPlayCubeWidgetState();
 }
 
-final Map<FaceColor, ui.Image> _cubeFaceImages = {
+final Map<FaceColor, ui.Image> cubeFaceImages = {
   FaceColor.YELLOW: null,
   FaceColor.GREEN: null,
   FaceColor.WHITE: null,
   FaceColor.BLUE: null,
   FaceColor.RED: null,
   FaceColor.ORANGE: null,
+};
+
+final Map<FaceColor,String> cubeFaceToResource ={
+  FaceColor.YELLOW: "assets/images/face_blue.jpg",
+  FaceColor.GREEN: "assets/images/face_green.jpg",
+  FaceColor.WHITE: "assets/images/face_orange.jpg",
+  FaceColor.BLUE: "assets/images/face_red.jpg",
+  FaceColor.RED: "assets/images/face_white.jpg",
+  FaceColor.ORANGE: "assets/images/face_yellow.jpg",
 };
 
 class _AutoPlayCubeWidgetState extends State<AutoPlayCubeWidget>
@@ -359,7 +369,7 @@ class CubePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (var value in _cubeFaceImages.values) {
+    for (var value in cubeFaceImages.values) {
       if (value == null) {
         return;
       }
@@ -371,7 +381,7 @@ class CubePainter extends CustomPainter {
     // the black background
     Rect surfaceRect = Rect.fromCircle(
       center: Offset.zero,
-      radius: _cubeFaceImages[FaceColor.RED].width * 0.5,
+      radius: cubeFaceImages[FaceColor.RED].width * 0.5,
     );
 
     cube.orderedPaintSurfaces.forEach((ps) {
@@ -380,7 +390,7 @@ class CubePainter extends CustomPainter {
 
       canvas.save();
       canvas.transform(tsf.storage);
-      canvas.scale(cube.pieceSize / _cubeFaceImages[FaceColor.RED].width);
+      canvas.scale(cube.pieceSize / cubeFaceImages[FaceColor.RED].width);
 
 
       var text = ps.face.toString().split(".").last;
@@ -402,7 +412,7 @@ class CubePainter extends CustomPainter {
               .translate(-(surfaceRect.width / 2 - paragraph.width / 2), 0));
 
       if (ps.color != FaceColor.BLACK) {
-        ui.Image face = _cubeFaceImages[ps.color];
+        ui.Image face = cubeFaceImages[ps.color];
         canvas.drawImage(
           face,
           Offset(-face.width / 2, -face.height / 2),
@@ -419,68 +429,9 @@ class CubePainter extends CustomPainter {
   bool shouldRepaint(CubePainter other) => true;
 }
 
-class CubeWidget extends StatelessWidget {
-  const CubeWidget({Key key, this.cube}) : super(key: key);
-  final Cube cube;
 
-  @override
-  Widget build(BuildContext context) {
-    var widgets = cube.orderedPaintSurfaces
-        // .sublist(78, 84)
-        .map((ps) => LayoutId(
-              id: ps.piece.toString()+ps.face.toString(),
-              child: Transform(
-                transform: cube.cameraTransform.multiplied(ps.piece.transform)
-                  ..multiply(ps.canvasTransform)
-                // ..scale(cube.pieceSize / _cubeFaceImages[FaceColor.RED].width)
-                ,
-                alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: (){
-                    print(ps.face.toString().split(".").last);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.blue,border: Border.all(color: Colors.black)),
-                    child: Center(child: Text(ps.face.toString().split(".").last)),
-                  ),
-                ),
-              ),
-            ))
-        .toList();
-
-    return CustomMultiChildLayout(
-        delegate: CubeLayoutDelegate(cube), children: widgets);
-  }
-}
-
-class CubeLayoutDelegate extends MultiChildLayoutDelegate {
-  final Cube cube;
-
-  CubeLayoutDelegate(this.cube);
-
-  @override
-  void performLayout(ui.Size size) {
-    var center = size.center(Offset.zero);
-    cube.orderedPaintSurfaces.forEach((PieceSurface ps) {
-      var id = ps.piece.toString()+ps.face.toString();
-      if (hasChild(id)) {
-        Size childSize =
-        layoutChild(id, BoxConstraints.tight(Size(cube.pieceSize,cube.pieceSize)));
-        positionChild(id,
-            center.translate(-childSize.width / 2, -childSize.height / 2));
-      }
-    });
-
-  }
-
-  @override
-  bool shouldRelayout(covariant MultiChildLayoutDelegate oldDelegate) {
-    return true;
-  }
-}
 
 Widget getCubePainter(Cube cube) {
-
   return Container(
     // 魔方之外接受触摸事件，移动视角
     color: Colors.transparent,
@@ -491,7 +442,7 @@ Widget getCubePainter(Cube cube) {
     ),
   );
 }
-
+//
 // Widget getCubePainter(Cube cube) {
 //   return CustomPaint(
 //     painter: CubePainter(cube),
@@ -513,26 +464,26 @@ double getMoveRestoreAngle(double angle, double stepAngle) {
 
 void loadAllFaces() async {
   ByteData data = await rootBundle.load('assets/images/face_blue.jpg');
-  _cubeFaceImages[FaceColor.BLUE] =
+  cubeFaceImages[FaceColor.BLUE] =
       await loadImage(Uint8List.view(data.buffer));
 
   data = await rootBundle.load('assets/images/face_green.jpg');
-  _cubeFaceImages[FaceColor.GREEN] =
+  cubeFaceImages[FaceColor.GREEN] =
       await loadImage(Uint8List.view(data.buffer));
 
   data = await rootBundle.load('assets/images/face_orange.jpg');
-  _cubeFaceImages[FaceColor.ORANGE] =
+  cubeFaceImages[FaceColor.ORANGE] =
       await loadImage(Uint8List.view(data.buffer));
 
   data = await rootBundle.load('assets/images/face_red.jpg');
-  _cubeFaceImages[FaceColor.RED] = await loadImage(Uint8List.view(data.buffer));
+  cubeFaceImages[FaceColor.RED] = await loadImage(Uint8List.view(data.buffer));
 
   data = await rootBundle.load('assets/images/face_white.jpg');
-  _cubeFaceImages[FaceColor.WHITE] =
+  cubeFaceImages[FaceColor.WHITE] =
       await loadImage(Uint8List.view(data.buffer));
 
   data = await rootBundle.load('assets/images/face_yellow.jpg');
-  _cubeFaceImages[FaceColor.YELLOW] =
+  cubeFaceImages[FaceColor.YELLOW] =
       await loadImage(Uint8List.view(data.buffer));
 }
 
