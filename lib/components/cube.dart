@@ -63,6 +63,7 @@ class _PlayCubeWidgetState extends State<PlayCubeWidget>
           onPanUpdate(details);
         });
       },
+      on
       child: getCubePainter(widget.cube),
     );
   }

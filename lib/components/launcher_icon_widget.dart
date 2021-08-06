@@ -6,9 +6,9 @@ import 'package:hacube/data/Repo.dart';
 
 class LauncherIconWidget extends StatelessWidget {
   final FaceColor faceColor;
-  final int pos;
+  final int positionInAFace;
 
-  const LauncherIconWidget({Key key, this.faceColor, this.pos})
+  const LauncherIconWidget({Key key, this.faceColor, this.positionInAFace})
       : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class LauncherIconWidget extends StatelessWidget {
       );
     }
 
-    var app = Repo.map[faceColor][pos];
+    var app = Repo.map[faceColor][positionInAFace];
 
     var appIcon = app == null
         ? Container()
@@ -31,7 +31,7 @@ class LauncherIconWidget extends StatelessWidget {
           child: Image.memory(
               app.icon,
               color: colorMap[faceColor],
-              colorBlendMode: BlendMode. ,
+              colorBlendMode: BlendMode.lighten,
             ),
         );
 

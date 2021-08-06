@@ -7,6 +7,9 @@
 build/
 
 .flutter-plugins
+.flutter-plugins-dependencies
+
+pubspec.lock  # Except for application packages
 
 
 .idea/
@@ -14,3 +17,4 @@ build/
 
 __*
 lib/test*
+

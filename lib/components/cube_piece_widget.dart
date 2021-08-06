@@ -24,7 +24,7 @@ class CubeWidget extends StatelessWidget {
           transform: cube.cameraTransform.multiplied(ps.piece.transform)
             ..multiply(ps.canvasTransform),
           alignment: Alignment.center,
-          child: LauncherIconWidget(faceColor: ps.color, pos:index),
+          child: LauncherIconWidget(faceColor: ps.color, positionInAFace:index),
         ),
       );
     }).toList();
