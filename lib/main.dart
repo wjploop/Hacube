@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hacube/components/cube.dart';
 import 'package:hacube/cube.dart';
+import 'package:hacube/data/Repo.dart';
 import 'package:hacube/event.dart';
 import 'package:hacube/screens/play.dart';
 
@@ -33,6 +34,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final cube = Cube();
   EventBus eventBus = EventBus();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void autoPlayNavWrap(Future future) async {
     eventBus.fire(AutoPlayEvent(play: false));
     await future;
@@ -41,54 +47,63 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/background.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/glow.png"),
-              repeat: ImageRepeat.repeat,
-            ),
-          ),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                flex: 3,
-                child: AutoPlayCubeWidget(cube: cube, eventBus: eventBus),
+    return FutureBuilder(
+      future: Repo.init(),
+      builder: (context, snapshot) {
+        if(snapshot.connectionState != ConnectionState.done) {
+          return Container(child: Center(child: Text("${snapshot.connectionState}"),),);
+        }
+        return Scaffold(
+          backgroundColor: Colors.black,
+          body: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/background.jpg"),
+                fit: BoxFit.cover,
               ),
-              Expanded(
-                flex: 2,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    CPButton(
-                      onPressed: () async {
-                        autoPlayNavWrap(Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PlayScreen()),
-                        ));
-                      },
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 26,
-                        vertical: 8,
-                      ),
-                      child: Text("START"),
-                    ),
-                  ],
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/glow.png"),
+                  repeat: ImageRepeat.repeat,
                 ),
               ),
-            ],
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    flex: 3,
+                    child: AutoPlayCubeWidget(cube: cube, eventBus: eventBus),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        CPButton(
+                          onPressed: () async {
+                            autoPlayNavWrap(Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => PlayScreen()),
+                            ));
+                          },
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 26,
+                            vertical: 8,
+                          ),
+                          child: Text("START"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
+
     );
   }
 }

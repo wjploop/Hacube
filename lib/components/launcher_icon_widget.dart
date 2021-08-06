@@ -1,29 +1,58 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hacube/cube.dart';
-
-import 'cube.dart';
+import 'package:hacube/data/Repo.dart';
 
 class LauncherIconWidget extends StatelessWidget {
   final FaceColor faceColor;
+  final int pos;
 
-  const LauncherIconWidget({Key key, this.faceColor}) : super(key: key);
+  const LauncherIconWidget({Key key, this.faceColor, this.pos})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var icon =
-    // (faceColor == FaceColor.BLACK)
-    //     ? Container()
-        // : Image.asset(cubeFaceToResource[faceColor]);
-    // :
-    Container(color: colorMap[faceColor],);
+    if (faceColor == FaceColor.BLACK) {
+      return Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(0),
+            color: colorMap[faceColor],
+            border: Border.all(color: Colors.black)),
+        padding: EdgeInsets.all(10),
+      );
+    }
+
+    var app = Repo.map[faceColor][pos];
+
+    var appIcon = app == null
+        ? Container()
+        : ClipOval(
+          child: Image.memory(
+              app.icon,
+              color: colorMap[faceColor],
+              colorBlendMode: BlendMode. ,
+            ),
+        );
+
+    // appIcon = Center(child: Text("${app.name}",));
+
+    var icon = Container(
+      decoration: BoxDecoration(
+          color: colorMap[faceColor],
+          border: Border.all(color: Colors.black, width: 1)),
+      padding: EdgeInsets.all(10),
+      child: appIcon,
+    );
 
     return GestureDetector(
       onTap: () {
-        print(faceColor.toString());
+        app.rawApp.openApp();
+      },
+      onLongPress: (){
+        app.rawApp.openSettingsScreen();
       },
       child: Container(
-        decoration: BoxDecoration(
-             border: Border.all(color: Colors.black)),
         child: Center(
           child: icon,
         ),
@@ -33,11 +62,11 @@ class LauncherIconWidget extends StatelessWidget {
 }
 
 var colorMap = {
-  FaceColor.YELLOW:Colors.yellow,
-  FaceColor.GREEN:Colors.green,
-  FaceColor.WHITE:Colors.white,
-  FaceColor.BLUE:Colors.blue,
-  FaceColor.RED:Colors.redAccent,
-  FaceColor.ORANGE:Colors.orange,
-  FaceColor.BLACK:Colors.black,
+  FaceColor.YELLOW: Colors.yellow,
+  FaceColor.GREEN: Colors.green,
+  FaceColor.WHITE: Colors.white,
+  FaceColor.BLUE: Colors.blue,
+  FaceColor.RED: Colors.redAccent,
+  FaceColor.ORANGE: Colors.orange,
+  FaceColor.BLACK: Colors.black,
 };

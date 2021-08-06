@@ -25,6 +25,8 @@ dependencies:
     sdk: flutter
 
   event_bus: ^1.1.1
+  device_apps: ^2.1.1
+
 
 dev_dependencies:
   flutter_test:

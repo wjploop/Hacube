@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart'
     show Vector3, Vector2, Matrix3, Matrix4;
 
@@ -33,6 +34,10 @@ class Cube {
 
   // surfaces in paint order, it does not include surfaces of center piece
   final List<PieceSurface> orderedPaintSurfaces = [];
+
+  // BACK, LEFT, TOP, FRONT, RIGHT, DOWN
+  // 遍历方块的方向， x++ y++, z--
+  // 则，正面
 
   final Map<int, CubePiece> positionMap = Map();
 
@@ -275,7 +280,8 @@ class CubePiece {
 
   static final originRotation = Matrix3.identity();
   final Cube cube;
-  // 从上到下，
+
+  // 从上到下，从左到右
   final int initPosition; // 0-26 white front / orange up
   final List<PieceSurface> surfaces = [];
   final Vector3 initOrigin;
@@ -336,6 +342,8 @@ class CubePiece {
 class PieceSurface {
   PieceSurface(this.piece, this.face)
       : color = getColor(piece.initPosition, face),
+        positionInSameColor = getPosition(
+            piece.initPosition, face, getColor(piece.position, face)),
         initNormal = getFaceNormal(face),
         initOrigin = getSurfaceOrigin(piece, face),
         initPlaneTL = getSurfaceVertex(piece, face, Corner.TL),
@@ -367,6 +375,8 @@ class PieceSurface {
         break;
     }
   }
+
+  final int positionInSameColor;
 
   final CubePiece piece;
   final Face face;
@@ -510,6 +520,28 @@ Vector3 getSurfaceVertex(CubePiece piece, Face face, Corner corner) {
       break;
   }
   return faceOrigin..add(v3);
+}
+
+int getPosition(int position, Face face, FaceColor color) {
+  if (color == FaceColor.RED) {
+    return position;
+  } else if (color == FaceColor.WHITE) {
+    return position ~/ 9 * 3 + position % 9;
+  } else if (color == FaceColor.ORANGE) {
+    return position - 18;
+  } else if (color == FaceColor.YELLOW) {
+    if (position < 18) {
+      return position - position ~/ 6 * 6;
+    } else {
+      return position - 18;
+    }
+  } else if (color == FaceColor.GREEN) {
+    return position ~/ 3;
+  }else if(color == FaceColor.BLUE) {
+    return position ~/ 3;
+  }
+
+  return position;
 }
 
 FaceColor getColor(int position, Face face) {

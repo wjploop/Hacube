@@ -57,7 +57,7 @@ class PlayScreenState extends State<PlayScreen>
 
     eventBus.on<CubeFinishedEvent>().listen((event) {
       setState(() {
-        showFinished = true;
+        // showFinished = true;
       });
     });
 
@@ -72,7 +72,7 @@ class PlayScreenState extends State<PlayScreen>
 
     setState(() {});
 
-    await shuffle();
+    // await shuffle();
 
     setState(() {
       waitInitShuffle = false;

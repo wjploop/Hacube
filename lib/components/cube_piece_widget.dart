@@ -13,18 +13,18 @@ class CubeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var widgets = cube.orderedPaintSurfaces
-        // .sublist(78, 84)
-        .map((PieceSurface ps) {
+
+    var widgets = cube.orderedPaintSurfaces.asMap().entries
+        .map((e) {
+          int index = e.value.positionInSameColor;
+          PieceSurface ps = e.value;
       return LayoutId(
         id: ps.piece.toString() + ps.face.toString(),
         child: Transform(
           transform: cube.cameraTransform.multiplied(ps.piece.transform)
-            ..multiply(ps.canvasTransform)
-          // ..scale(cube.pieceSize / _cubeFaceImages[FaceColor.RED].width)
-          ,
+            ..multiply(ps.canvasTransform),
           alignment: Alignment.center,
-          child: LauncherIconWidget(faceColor:ps.color),
+          child: LauncherIconWidget(faceColor: ps.color, pos:index),
         ),
       );
     }).toList();
@@ -55,6 +55,6 @@ class CubeLayoutDelegate extends MultiChildLayoutDelegate {
 
   @override
   bool shouldRelayout(covariant MultiChildLayoutDelegate oldDelegate) {
-    return true;
+    return false;
   }
 }
