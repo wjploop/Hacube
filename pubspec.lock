@@ -43,13 +43,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "1.15.0"
-  device_apps:
-    dependency: "direct main"
-    description:
-      name: device_apps
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "2.1.1"
   event_bus:
     dependency: "direct main"
     description:
